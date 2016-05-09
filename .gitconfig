@@ -1,0 +1,9 @@
+[user]
+	name = Ivan Daniluk
+	email = ivan.daniluk@gmail.com
+
+[color]
+	ui = true
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
