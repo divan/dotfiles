@@ -1,6 +1,7 @@
 export GOPATH=~
 export PATH=$PATH:~/bin
 export EDITOR=vim
+export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 export PROMPT_DIRTRIM=1
 
