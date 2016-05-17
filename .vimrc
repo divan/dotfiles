@@ -11,6 +11,11 @@ Plug 'Shougo/neopairs.vim'
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'tmhedberg/matchit'
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 if has('nvim')
 	Plug 'Shougo/deoplete.nvim'
 	Plug 'zchee/deoplete-go', { 'do': 'make'}
@@ -232,3 +237,20 @@ autocmd BufReadPost *
 			\   exe "normal g`\"" |
 			\ endif
 
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#auto_complete_start_length = 6
+let g:deoplete#auto_complete_delay = 100
+let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+let g:neosnippet#snippets_directory='~/.vim/plugged/vim-go/gosnippets/snippets/'
