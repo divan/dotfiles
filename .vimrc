@@ -254,3 +254,5 @@ if has('conceal')
 endif
 
 let g:neosnippet#snippets_directory='~/.vim/plugged/vim-go/gosnippets/snippets/'
+
+set relativenumber
