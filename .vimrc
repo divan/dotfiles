@@ -14,8 +14,6 @@ Plug 'tmhedberg/matchit'
 function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
-Plug 'zchee/deoplete-go', { 'do': 'make'}
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 if has('nvim')
 	Plug 'Shougo/deoplete.nvim'
 	Plug 'zchee/deoplete-go', { 'do': 'make'}
@@ -23,6 +21,12 @@ else
 	Plug 'Shougo/neocomplete.vim'
 	Plug 'SirVer/ultisnips'
 endif
+Plug 'pangloss/vim-javascript'
+" Plug 'leafgarland/typescript-vim'
+Plug 'Quramy/vim-js-pretty-template'
+" Plug 'bdauria/angular-cli.vim'
+Plug 'chase/vim-ansible-yaml'
+Plug 'ternjs/tern_for_vim'
 call plug#end()
 
 set nocompatible              " be iMproved, required
@@ -63,6 +67,7 @@ set wildmenu
 set wildmode=longest,list,full
 set undofile
 set undodir=/tmp
+set dir=/tmp
 set laststatus=2
 set hidden
 
@@ -78,7 +83,9 @@ noremap <Left> <NOP>
 noremap <Right> <NOP>
 
 " Common hotkeys
-nmap <Leader>t :NERDTree<CR>
+nmap <F7> :NERDTree<CR>
+let NERDTreeQuitOnOpen=1
+
 nmap <Leader>c :close<CR>
 nmap <Leader>W :set wrap!<cr>
 nmap <Leader>N :set number!<cr>
@@ -125,6 +132,7 @@ let g:go_highlight_build_constraints = 1
 au FileType go nmap gr <Plug>(go-run)
 au FileType go nmap gb <Plug>(go-build)
 au FileType go nmap gt <Plug>(go-test)
+au FileType go nmap gl <Plug>(go-test-compile)
 au FileType go nmap gi <Plug>(go-info)
 au FileType go nmap gn <Plug>(go-doc-browser)
 au FileType go nmap gh <Plug>(go-doc)
@@ -140,9 +148,12 @@ au FileType go nmap <leader>r  <Plug>(go-run)
 au FileType go nmap <leader>b  <Plug>(go-build)
 au FileType go nmap <Leader>d <Plug>(go-doc)
 au FileType go nmap <Leader>i :GoImports<CR>
+au FileType go nmap <Leader>t :GoAlternate<CR>
 
 " airline
 let g:airline#extensions#tabline#enabled = 1
+
+set autowrite
 
 
 " ==================== completion and snippet =========================
@@ -161,7 +172,7 @@ if has('nvim')
 	" Use partial fuzzy matches like YouCompleteMe
 	call deoplete#custom#set('_', 'matchers', ['matcher_full_fuzzy'])
 else
-	let g:acp_enableAtStartup = 0
+	let g:acp_enableAtStartup = 1
 
 	let g:neocomplete#enable_at_startup = 1
 	let g:neocomplete#enable_smart_case = 1
@@ -237,11 +248,13 @@ autocmd BufReadPost *
 			\   exe "normal g`\"" |
 			\ endif
 
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#auto_complete_start_length = 6
-let g:deoplete#auto_complete_delay = 100
-let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
-let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+if has('nvim')
+	let g:deoplete#enable_at_startup = 1
+	let g:deoplete#auto_complete_start_length = 6
+	let g:deoplete#auto_complete_delay = 100
+	let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+	let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+endif
 
 " Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -256,3 +269,48 @@ endif
 let g:neosnippet#snippets_directory='~/.vim/plugged/vim-go/gosnippets/snippets/'
 
 set relativenumber
+
+" Typescript
+au FileType typescript setl sw=2 sts=2 et
+
+let g:typescript_compiler_binary = 'tsc'
+let g:typescript_compiler_options = ''
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
+
+autocmd FileType javascript JsPreTmpl html
+autocmd FileType typescript JsPreTmpl markdown
+autocmd FileType typescript syn clear foldBraces
+autocmd FileType javascript set noet
+
+" autocmd FileType typescript,html call angular_cli#init()
+" au FileType typescript,css nmap <leader>t :ETemplate<CR>
+" au FileType html,css nmap <leader>c :EComponent<CR>
+" au FileType typescript,html nmap <leader>s :EStylesheet<CR>
+" au FileType typescript,html,css nmap <leader>e :ESpec<CR>
+
+" Easier buffer switching
+nnoremap <leader>§ :e #<CR>
+nnoremap <leader>1 :b 1<CR>
+nnoremap <leader>2 :b 2<CR>
+nnoremap <leader>3 :b 3<CR>
+nnoremap <leader>4 :b 4<CR>
+nnoremap <leader>5 :b 5<CR>
+nnoremap <leader>6 :b 6<CR>
+nnoremap <leader>7 :b 7<CR>
+
+"Relative with start point or with line number or absolute number lines
+function! NumberToggle()
+    if(&nu == 0)
+        set number
+        set relativenumber
+    else
+        set norelativenumber
+        set nonumber
+    endif
+endfunction
+
+nnoremap <silent> <leader>n :call NumberToggle()<CR>
+
+nnoremap <Leader><Leader> <C-^>
+
